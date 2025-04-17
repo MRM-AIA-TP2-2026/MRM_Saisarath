@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<robot>
+
+    <gazebo reference="BodyLink">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/Purple</material>
+    </gazebo>
+
+    <gazebo reference="Wheel1Link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="Wheel2Link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="Wheel3Link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="Wheel4Link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <!--sensor-->
+
+    <gazebo reference="gpsLink">
+        <material>Gazebo/Blue</material>
+        <sensor name="gps_sensor" type="gps">
+            <always_on>true</always_on>
+            <update_rate>1</update_rate>
+            <plugin filename="libgazebo_ros_gps_sensor.so" name="gps_plugin">
+                <ros>
+                    <argument>--ros-args --remap ~/fix:=/gps</argument>
+                </ros>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="imuLink">
+        <material>Gazebo/Red</material>
+        <sensor name="imu_sensor" type="imu">
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                <ros>
+                    <namespace></namespace>
+                    <remapping>~/out:=imu</remapping>
+                </ros>
+                <initial_orientation_as_reference>false</initial_orientation_as_reference>
+            </plugin>
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>true</visualize>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="lidarLink">
+
+        <sensor name="lidar_sensor" type="ray" update_rate="24">
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+            <pose>0 0 0 0 0 0</pose>
+            <visualize>true</visualize>
+            <update_rate>24</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>600</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14</min_angle>
+                        <max_angle>3.14</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.1</min>
+                    <max>50</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+            <plugin name="lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+                <ros>
+                    <remapping>~/out:=scan</remapping>
+                </ros>
+
+                <output_type>sensor_msgs/LaserScan</output_type>
+
+
+            </plugin>
+        </sensor>
+    </gazebo>
+
+    <gazebo reference="zed2_link">
+        <sensor type="depth" name="zed2_sensor" update_rate="24">
+            <pose>0 0 0 0 0 -1.57079632679</pose>
+            <visualize>true</visualize>
+            <camera>
+                <horizontal_fov>2</horizontal_fov>
+                <image>
+                    <width>1080</width>
+                    <height>720</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>10</far>
+                </clip>
+            </camera>
+            <plugin name="depth_camera" filename="libgazebo_ros_camera.so">
+                <frame_name>zed2_link</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+
+    <!-- controller -->
+
+    <gazebo>
+
+        <plugin name='skid_steer_drive' filename='libgazebo_ros_diff_drive.so'>
+
+            <ros>
+                <namespace></namespace>
+            </ros>
+
+            <num_wheel_pairs>2</num_wheel_pairs>
+
+            <left_joint>Wheel4Joint</left_joint>
+            <right_joint>Wheel3Joint</right_joint>
+
+
+            <left_joint>Wheel2Joint</left_joint>
+            <right_joint>Wheel1Joint</right_joint>
+
+            <wheel_separation>${bodyLinky+WheelLinkThick}</wheel_separation>
+            <wheel_separation>${bodyLinky+WheelLinkThick}</wheel_separation>
+
+            <wheel_diameter>${WheelLinkRadius}</wheel_diameter>
+            <wheel_diameter>${WheelLinkRadius}</wheel_diameter>
+
+            <max_wheel_torque>1000</max_wheel_torque>
+            <max_wheel_acceleration>5.0</max_wheel_acceleration>
+
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+            <publish_wheel_tf>true</publish_wheel_tf>
+
+            <odometry_frame>odom</odometry_frame>
+            <robot_base_frame>BodyLink</robot_base_frame>
+
+        </plugin>
+    </gazebo>
+
+</robot>
