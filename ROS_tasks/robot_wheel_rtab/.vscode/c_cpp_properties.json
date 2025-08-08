@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/exhausted/Saisarath/stuff/MRM/URDF_WS/install/custom_messsages_interface/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/exhausted/Saisarath/stuff/MRM/URDF_WS/src/arm_robot/include/**",
+        "/home/exhausted/Saisarath/stuff/MRM/URDF_WS/src/gazebo_test/include/**",
+        "/home/exhausted/Saisarath/stuff/MRM/URDF_WS/src/gui/include/**",
+        "/home/exhausted/Saisarath/stuff/MRM/URDF_WS/src/robot_wheel/include/**",
+        "/home/exhausted/Saisarath/stuff/MRM/URDF_WS/src/urdf_test/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
