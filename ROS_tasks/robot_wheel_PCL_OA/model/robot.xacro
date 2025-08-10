@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<robot name="differential_drive_robot"
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--body dimnsion-->
+    <xacro:property name="bodyLinkx" value="1"/>
+    <xacro:property name="bodyLinky" value="0.6"/>
+    <xacro:property name="bodyLinkz" value="0.3"/>
+
+    <!--wheel dimesnion-->
+
+    <xacro:property name="WheelLinkRadius" value="0.15"/>
+    <xacro:property name="WheelLinkThick" value="0.1"/>
+    <xacro:property name="WheelLinkLocaZ" value="-0.1"/>
+
+    <!-- Materail density-->
+    <xacro:property name="BodyDense" value="2500"/>
+    <xacro:property name="WheelDense" value="2500"/>
+
+    <xacro:property name="PI" value="3.14159265"/>
+
+    <!--mass and stuff-->
+
+
+    <xacro:property name="BodyMass" value="${BodyDense*bodyLinkx*bodyLinky*bodyLinkz}"/>
+    <xacro:property name="WheelMass" value="${WheelDense*PI*WheelLinkRadius*WheelLinkRadius*WheelLinkThick}"/>
+
+    <!--moment of intia-->
+    <xacro:property name="IzWheel" value="${0.5*WheelMass*WheelLinkRadius*WheelLinkRadius}"/>
+    <xacro:property name="IWheel" value="${(1.0/12.0)*WheelMass*(3.0*WheelLinkRadius*WheelLinkRadius+WheelLinkThick*WheelLinkThick)}"/>
+
+    <xacro:macro name="InertiaWheel">
+        <inertial>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <mass value="${WheelMass}"/>
+            <inertia ixx="${IWheel}" ixy="0.0" ixz="0.0" iyy="${IWheel}" iyz="0" izz="${IzWheel}" />
+        </inertial>
+    </xacro:macro>
+
+
+    <!--gazebo file include-->
+
+    <xacro:include filename="$(find robot_wheel)/model/robot.gazebo" />
+
+    <!-- links and stuff-->
+
+    <!-- IDK wy dummy link but  gazebo yaps a lot-->
+
+
+    <!--crazy links-->
+    <link name="BodyLink">
+        <visual>
+            <geometry>
+                <box size="${bodyLinkx} ${bodyLinky} ${bodyLinkz}"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="${bodyLinkx} ${bodyLinky} ${bodyLinkz}"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </collision>
+
+        <inertial>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <mass value="${BodyMass}"/>
+            <inertia ixx="${(1.0/12.0) * BodyMass * (bodyLinky * bodyLinky + bodyLinkz * bodyLinkz)}" ixy="0.0" ixz="0.0" iyy="${(1.0/12.0) * BodyMass * (bodyLinkx * bodyLinkx + bodyLinkz * bodyLinkz)}" iyz="0.0" izz="${(1.0/12.0) * BodyMass * (bodyLinky * bodyLinky + bodyLinkx * bodyLinkx)}"/>
+        </inertial>
+    </link>
+
+    <!--joint hell-->
+    <joint name="Wheel1Joint" type="continuous">
+        <parent link="BodyLink"/>
+        <child link="Wheel1Link"/>
+        <origin xyz="${-(bodyLinkx/2)+1.2*WheelLinkRadius} ${-(bodyLinky/2)-WheelLinkThick/2} ${WheelLinkLocaZ}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000" velocity="1000"/>
+        <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+
+    <link name="Wheel1Link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </collision>
+        <xacro:InertiaWheel/>
+    </link>
+
+
+    <joint name="Wheel2Joint" type="continuous">
+        <parent link="BodyLink"/>
+        <child link="Wheel2Link"/>
+        <origin xyz="${-(bodyLinkx/2)+1.2*WheelLinkRadius} ${(bodyLinky/2)+WheelLinkThick/2} ${WheelLinkLocaZ}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000" velocity="1000"/>
+        <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+    <link name="Wheel2Link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </collision>
+        <xacro:InertiaWheel/>
+    </link>
+
+
+    <joint name="Wheel3Joint" type="continuous">
+        <parent link="BodyLink"/>
+        <child link="Wheel3Link"/>
+        <origin xyz="${(bodyLinkx/2)-1.2*WheelLinkRadius} ${-(bodyLinky/2)-WheelLinkThick/2} ${WheelLinkLocaZ}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000" velocity="1000"/>
+        <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+
+    <link name="Wheel3Link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </collision>
+        <xacro:InertiaWheel/>
+    </link>
+
+
+
+    <joint name="Wheel4Joint" type="continuous">
+        <parent link="BodyLink"/>
+        <child link="Wheel4Link"/>
+        <origin xyz="${(bodyLinkx/2)-1.2*WheelLinkRadius} ${(bodyLinky/2)+WheelLinkThick/2} ${WheelLinkLocaZ}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000" velocity="1000"/>
+        <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+
+    <link name="Wheel4Link">
+        <visual>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="1.570795 0 0"/>
+            <geometry>
+                <cylinder radius="${WheelLinkRadius}" length="${WheelLinkThick}"/>
+            </geometry>
+        </collision>
+        <xacro:InertiaWheel/>
+    </link>
+
+    <!--done booyah-->
+    <!--gps sensor-->
+
+    <link name="gpsLink">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.05"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="gpsJoint" type="fixed">
+        <parent link="BodyLink"/>
+        <child link="gpsLink"/>
+        <origin xyz="-0.3 0 ${bodyLinkz/2+0.02}"/>
+    </joint>
+
+
+    <link name="imuLink">
+        <visual>
+            <geometry>
+                <box size="0.1 0.1 0.1"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1.0 0.0 0.0 1.0 "/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="imuJoint" type="fixed">
+        <parent link="BodyLink"/>
+        <child link="imuLink"/>
+        <origin xyz="${bodyLinkx/2} 0.0 ${bodyLinkz/2}" rpy=" 0 0 0"/>
+    </joint>
+
+
+    <link name="lidarLink">
+        <visual>
+            <geometry>
+                <geometry>
+                    <cylinder radius="0.05" length="0.03"/>
+                </geometry>
+
+            </geometry>
+        </visual>
+    </link>
+
+
+    <joint name="lidarJoint" type="fixed">
+        <parent link="BodyLink"/>
+        <child link="lidarLink"/>
+        <origin xyz="0.0 0.0 ${(bodyLinkz/2)+0.05}" rpy=" 0 0 0"/>
+    </joint>
+
+
+    <!-- Camera Link -->
+    <link name="scamera_link">
+    </link>
+
+    <link name="camera_frame_link"></link>
+
+    <link name="camera_link"></link>
+
+    <!-- Camera Joint (attach to human head) -->
+    <joint name="body_to_scamera_link" type="fixed">
+        <parent link="BodyLink"/>
+        <child link="scamera_link"/>
+        <origin xyz="${bodyLinkx/2}  0  0.25" rpy="0 0 0"/>
+    </joint>
+
+
+    <joint name="camera_link_to_camera_frame_link" type="fixed">
+        <parent link="scamera_link"/>
+        <child link="camera_frame_link"/>
+        <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+    </joint>
+
+
+
+    <joint name="body_to_camera_link" type="fixed">
+        <parent link="BodyLink"/>
+        <child link="camera_link"/>
+        <origin xyz="${bodyLinkx/2}  0  0.25" rpy="0 0 0"/>
+    </joint>
+
+
+
+</robot>
